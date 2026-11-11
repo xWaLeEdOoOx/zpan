@@ -117,14 +117,17 @@ test.describe('Locale rendering', () => {
     })
   }
 
-  test('the Arabic starter locale falls back to English for uncovered keys @desktop', async ({ page }) => {
+  test('the Arabic locale covers files.* while uncovered pages stay English @desktop', async ({ page }) => {
     await signInInLocale(page, ARABIC)
 
-    // nav.* and the quota chip are translated, files.title is not, so the
-    // breadcrumb keeps English while the sidebar is Arabic.
+    // Sidebar nav, the quota chip, and files.* are translated; shares.* is not,
+    // so the Shares page keeps its English copy.
     await expect(sidebar(page).getByText('ملفاتي', { exact: true })).toBeVisible()
     await expect(sidebar(page).getByText('استُخدم 0 B من 1.0 GB')).toBeVisible()
-    await expect(page.getByText('Files', { exact: true })).toBeVisible()
-    await page.screenshot({ path: 'test-results/locale-files-ar-fallback.png' })
+    await expect(sidebar(page).getByText('سلة المهملات', { exact: true })).toBeVisible()
+
+    await page.goto('/shares?status=all&box=sent')
+    await expect(page.getByTestId('page-header').getByText('My Shares')).toBeVisible()
+    await page.screenshot({ path: 'test-results/locale-shares-ar-fallback.png' })
   })
 })
