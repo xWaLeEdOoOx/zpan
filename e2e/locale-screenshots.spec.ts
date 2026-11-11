@@ -130,8 +130,8 @@ test.describe('Locale rendering', () => {
 
     await page.goto('/admin')
     await expect(page.locator('header').getByText('لوحة الإدارة')).toBeVisible()
-    await page.goto('/admin/users')
-    await expect(page.getByText('Users', { exact: true }).first()).toBeVisible()
-    await page.screenshot({ path: 'test-results/locale-admin-users-ar-fallback.png' })
+    await page.goto('/admin/settings')
+    await expect(page.getByText('Settings', { exact: true }).first()).toBeVisible()
+    await page.screenshot({ path: 'test-results/locale-admin-settings-ar-fallback.png' })
   })
 })
