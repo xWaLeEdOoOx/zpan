@@ -24,6 +24,9 @@ const ARABIC_PREFIXES = [
   'downloads.',
   'actors.',
   'device.',
+  'shares.',
+  'share.',
+  'profile.',
 ]
 
 const ARABIC_PLURAL_SUFFIXES = ['_zero', '_one', '_two', '_few', '_many', '_other']
@@ -84,12 +87,15 @@ describe('arabic locale coverage', () => {
 
 describe('arabic locale values', () => {
   it('every translated value uses Arabic script', () => {
-    // Strings with no letters in English outside placeholders (placeholder-only
-    // templates) are exempt.
+    // Exempt placeholder-only templates and literal technical examples
+    // (email, URL, scheme prefixes) that stay Latin by design.
+    const isTechnicalExample = (value: string) =>
+      /^[a-z0-9._+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(value) || /^(https?:|magnet:|ftp:)/i.test(value)
     const latinOnly = arKeys.filter(
       (key) =>
         enLocale[key] !== undefined &&
         /[A-Za-z]/.test(enLocale[key].replace(/\{\{\s*\w+\s*\}\}/g, '')) &&
+        !isTechnicalExample(enLocale[key]) &&
         !ARABIC_SCRIPT.test(arLocale[key]),
     )
     expect(latinOnly).toEqual([])
@@ -149,6 +155,12 @@ describe('arabic locale value contracts', () => {
     ['device.deny', 'الرفض'],
     ['device.code', 'رمز الجهاز'],
     ['actors.type.api_key', 'مفتاح API'],
+    ['shares.title', 'مشاركاتي'],
+    ['shares.statusActive', 'نشطة'],
+    ['shares.revoke', 'إلغاء'],
+    ['share.saveToDrive', 'حفظ في مساحتي'],
+    ['share.passwordPlaceholder', 'أدخل كلمة المرور'],
+    ['profile.publicSpaceTitle', 'المساحة العامة لـ {{name}}'],
   ]
 
   for (const [key, value] of CONTRACTS) {
@@ -186,7 +198,7 @@ describe('arabic runtime translation', () => {
     const { default: i18n } = await import('./index')
     await i18n.changeLanguage('ar')
     expect(i18n.t('files.title')).toBe('الملفات')
-    expect(i18n.t('shares.title')).toBe('My Shares')
+    expect(i18n.t('storage.title')).toBe('Storage')
     expect(i18n.t('admin.title')).toBe('Admin Console')
     expect(i18n.resolvedLanguage).toBe('ar')
   })
