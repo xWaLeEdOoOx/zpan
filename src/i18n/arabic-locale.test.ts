@@ -40,6 +40,10 @@ const ARABIC_PREFIXES = [
   'admin.overview.',
   'admin.about.',
   'admin.licenseRibbon.',
+  'admin.users.',
+  'admin.storages.',
+  'admin.audit.',
+  'admin.announcement.',
   'admin.title',
   'admin.backToFiles',
 ]
@@ -69,6 +73,13 @@ const LATIN_EXEMPTIONS = new Set([
   'admin.about.url',
   'admin.about.nodeVersion',
   'admin.about.cloud.title',
+  'admin.storages.sort.bucket',
+  'admin.storages.providerPlaceholder',
+  'admin.storages.bucketPlaceholder',
+  'admin.storages.regionPlaceholder',
+  'admin.storages.accessKeyPlaceholder',
+  'admin.storages.secretKeyPlaceholder',
+  'admin.storages.billingDescription',
 ])
 
 // en stores plurals as `base_one` / `base_other`; Arabic needs all six CLDR forms.
@@ -219,6 +230,11 @@ describe('arabic locale value contracts', () => {
     ['admin.nav.storages', 'خزائن التخزين'],
     ['admin.about.title', 'حول ZPan'],
     ['admin.backToFiles', 'العودة إلى التطبيق'],
+    ['admin.users.title', 'المستخدمون'],
+    ['admin.storages.title', 'خزائن التخزين'],
+    ['admin.storages.colBucket', 'الدلو'],
+    ['admin.audit.title', 'سجلات التدقيق'],
+    ['admin.announcement.title', 'إعلان الموقع'],
   ]
 
   for (const [key, value] of CONTRACTS) {
@@ -258,8 +274,9 @@ describe('arabic runtime translation', () => {
     expect(i18n.t('files.title')).toBe('الملفات')
     expect(i18n.t('storage.title')).toBe('التخزين')
     expect(i18n.t('admin.title')).toBe('لوحة الإدارة')
-    expect(i18n.t('admin.users.title')).toBe('Users')
+    expect(i18n.t('admin.users.title')).toBe('المستخدمون')
     expect(i18n.t('admin.settings.title')).toBe('Settings')
+    expect(i18n.t('admin.cloudStore.title')).toBe('Storage Plans')
     expect(i18n.resolvedLanguage).toBe('ar')
   })
 
