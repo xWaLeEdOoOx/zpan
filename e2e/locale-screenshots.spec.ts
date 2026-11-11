@@ -117,17 +117,17 @@ test.describe('Locale rendering', () => {
     })
   }
 
-  test('the Arabic locale covers share.* while uncovered pages stay English @desktop', async ({ page }) => {
+  test('the Arabic locale covers storage.* while uncovered pages stay English @desktop', async ({ page }) => {
     await signInInLocale(page, ARABIC)
 
-    // Sidebar nav, quota chip, files.*, shares.*, share.* are translated;
-    // storage.* is not, so the Storage page keeps its English heading.
+    // Sidebar nav, quota chip, files.*, shares.*, storage.* are translated;
+    // admin.* is not, so the admin console keeps its English label.
     await expect(sidebar(page).getByText('ملفاتي', { exact: true })).toBeVisible()
     await expect(sidebar(page).getByText('استُخدم 0 B من 1.0 GB')).toBeVisible()
-    await expect(sidebar(page).getByText('المشاركات', { exact: true })).toBeVisible()
+    await expect(sidebar(page).getByText('التخزين', { exact: true })).toBeVisible()
 
-    await page.goto('/storage')
-    await expect(page.getByRole('heading', { level: 1, name: 'Storage' })).toBeVisible()
-    await page.screenshot({ path: 'test-results/locale-storage-ar-fallback.png' })
+    await page.goto('/admin')
+    await expect(page.locator('header').getByText('Admin Console')).toBeVisible()
+    await page.screenshot({ path: 'test-results/locale-admin-ar-fallback.png' })
   })
 })

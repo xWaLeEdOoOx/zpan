@@ -34,6 +34,8 @@ const ARABIC_PREFIXES = [
   'announcement.',
   'settings.',
   'ihost.',
+  'storage.',
+  'features.',
 ]
 
 const ARABIC_PLURAL_SUFFIXES = ['_zero', '_one', '_two', '_few', '_many', '_other']
@@ -52,6 +54,8 @@ const LATIN_EXEMPTIONS = new Set([
   'settings.billing.comparison.pro',
   'settings.billing.comparison.business',
   'settings.billing.bound.planPro',
+  'storage.freePlanName',
+  'storage.freePlanPrice',
 ])
 
 // en stores plurals as `base_one` / `base_other`; Arabic needs all six CLDR forms.
@@ -193,6 +197,10 @@ describe('arabic locale value contracts', () => {
     ['settings.apiKeys.create', 'إنشاء مفتاح'],
     ['ihost.title', 'استضافة الصور'],
     ['settings.oauthApps.revokeAccess', 'إلغاء الوصول'],
+    ['storage.currentPlan', 'الخطة الحالية'],
+    ['storage.creditBalance', 'رصيد الائتمان'],
+    ['features.analytics', 'التحليلات'],
+    ['features.category.pro', 'ميزات Pro'],
   ]
 
   for (const [key, value] of CONTRACTS) {
@@ -230,7 +238,7 @@ describe('arabic runtime translation', () => {
     const { default: i18n } = await import('./index')
     await i18n.changeLanguage('ar')
     expect(i18n.t('files.title')).toBe('الملفات')
-    expect(i18n.t('storage.title')).toBe('Storage')
+    expect(i18n.t('storage.title')).toBe('التخزين')
     expect(i18n.t('admin.title')).toBe('Admin Console')
     expect(i18n.resolvedLanguage).toBe('ar')
   })
