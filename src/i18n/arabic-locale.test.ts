@@ -32,12 +32,27 @@ const ARABIC_PREFIXES = [
   'activity.',
   'notification.',
   'announcement.',
+  'settings.',
+  'ihost.',
 ]
 
 const ARABIC_PLURAL_SUFFIXES = ['_zero', '_one', '_two', '_few', '_many', '_other']
 
 const ARABIC_SCRIPT = /[\u0600-\u06FF]/
 const arKeys = Object.keys(arLocale)
+
+// Protocol names, typed confirmation strings, and product plan brand names stay
+// Latin in every locale; the same list is enforced by the locale build script.
+const LATIN_EXEMPTIONS = new Set([
+  'settings.tabWebDav',
+  'settings.apiKeys.typeWebdav',
+  'settings.apiKeys.type.webdav',
+  'settings.ihost.customDomain.placeholder',
+  'settings.ihost.disable.confirmPlaceholder',
+  'settings.billing.comparison.pro',
+  'settings.billing.comparison.business',
+  'settings.billing.bound.planPro',
+])
 
 // en stores plurals as `base_one` / `base_other`; Arabic needs all six CLDR forms.
 const pluralBases = [
@@ -101,6 +116,7 @@ describe('arabic locale values', () => {
         enLocale[key] !== undefined &&
         /[A-Za-z]/.test(enLocale[key].replace(/\{\{\s*\w+\s*\}\}/g, '')) &&
         !isTechnicalExample(enLocale[key]) &&
+        !LATIN_EXEMPTIONS.has(key) &&
         !ARABIC_SCRIPT.test(arLocale[key]),
     )
     expect(latinOnly).toEqual([])
@@ -172,6 +188,11 @@ describe('arabic locale value contracts', () => {
     ['activity.title', 'النشاط'],
     ['notification.minutesAgo', 'قبل {{count}} دقيقة'],
     ['announcement.title', 'إعلانات الموقع'],
+    ['settings.title', 'الإعدادات'],
+    ['settings.tabApiKeys', 'مفاتيح API'],
+    ['settings.apiKeys.create', 'إنشاء مفتاح'],
+    ['ihost.title', 'استضافة الصور'],
+    ['settings.oauthApps.revokeAccess', 'إلغاء الوصول'],
   ]
 
   for (const [key, value] of CONTRACTS) {
