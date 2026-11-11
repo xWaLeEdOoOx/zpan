@@ -5,25 +5,55 @@ import en from './locales/en.json'
 const arLocale = ar as Record<string, string>
 const enLocale = en as Record<string, string>
 
-// The starter Arabic locale covers the surfaces a user hits first: sign-in and
-// sign-up, the sidebar, common controls, media preview, quota chips, the
-// appearance settings, and the public-page accessibility labels. Keys it does
-// not cover fall back to English.
-const ARABIC_PREFIXES = ['auth.', 'nav.', 'common.', 'preview.', 'quota.', 'settings.appearance.', 'public.']
+// The Arabic locale covers these surfaces completely. Keys outside them fall
+// back to English until their batch lands.
+const ARABIC_PREFIXES = [
+  'auth.',
+  'nav.',
+  'common.',
+  'preview.',
+  'quota.',
+  'settings.appearance.',
+  'public.',
+  'files.',
+  'trash.',
+  'uploadPanel.',
+  'music.',
+  'mediaLibrary.',
+  'tasks.',
+]
+
+const ARABIC_PLURAL_SUFFIXES = ['_zero', '_one', '_two', '_few', '_many', '_other']
 
 const ARABIC_SCRIPT = /[\u0600-\u06FF]/
 const arKeys = Object.keys(arLocale)
+
+// en stores plurals as `base_one` / `base_other`; Arabic needs all six CLDR forms.
+const pluralBases = [
+  ...new Set(
+    Object.keys(enLocale)
+      .filter((key) => /_(one|other)$/.test(key))
+      .map((key) => key.replace(/_(one|other)$/, '')),
+  ),
+]
+
+function isArabicPluralForm(key: string) {
+  return (
+    ARABIC_PLURAL_SUFFIXES.some((suffix) => key.endsWith(suffix)) &&
+    pluralBases.includes(key.replace(/_(zero|one|two|few|many|other)$/, ''))
+  )
+}
 
 function placeholders(value: string) {
   return (value.match(/\{\{\s*\w+\s*\}\}/g) ?? []).sort().join('|')
 }
 
 describe('arabic locale coverage', () => {
-  it('ar.json contains only keys that exist in en.json', () => {
-    expect(arKeys.filter((key) => !Object.hasOwn(enLocale, key))).toEqual([])
+  it('ar.json contains only keys that exist in en.json, plus full Arabic plural forms', () => {
+    expect(arKeys.filter((key) => !Object.hasOwn(enLocale, key) && !isArabicPluralForm(key))).toEqual([])
   })
 
-  it('ar.json covers every key in the starter prefixes', () => {
+  it('ar.json covers every key in the covered prefixes', () => {
     const missing = Object.keys(enLocale)
       .filter((key) => ARABIC_PREFIXES.some((prefix) => key.startsWith(prefix)))
       .filter((key) => !Object.hasOwn(arLocale, key))
@@ -36,8 +66,16 @@ describe('arabic locale coverage', () => {
     }
   })
 
-  it('ar.json has no plural-suffixed keys — Arabic needs all six CLDR plural forms', () => {
-    expect(arKeys.filter((key) => /_(zero|one|two|few|many|other)$/.test(key))).toEqual([])
+  it('plural keys provide every Arabic plural form', () => {
+    // Checked for every base whose plural pair ar.json has started covering.
+    const missing = pluralBases
+      .filter((base) => Object.hasOwn(arLocale, `${base}_one`))
+      .flatMap((base) =>
+        ARABIC_PLURAL_SUFFIXES.filter((suffix) => !Object.hasOwn(arLocale, `${base}${suffix}`)).map(
+          (suffix) => `${base}${suffix}`,
+        ),
+      )
+    expect(missing).toEqual([])
   })
 })
 
@@ -46,13 +84,18 @@ describe('arabic locale values', () => {
     // Strings with no letters in English outside placeholders (placeholder-only
     // templates) are exempt.
     const latinOnly = arKeys.filter(
-      (key) => /[A-Za-z]/.test(enLocale[key].replace(/\{\{\s*\w+\s*\}\}/g, '')) && !ARABIC_SCRIPT.test(arLocale[key]),
+      (key) =>
+        enLocale[key] !== undefined &&
+        /[A-Za-z]/.test(enLocale[key].replace(/\{\{\s*\w+\s*\}\}/g, '')) &&
+        !ARABIC_SCRIPT.test(arLocale[key]),
     )
     expect(latinOnly).toEqual([])
   })
 
   it('interpolation placeholders match en.json for every key', () => {
-    const mismatched = arKeys.filter((key) => placeholders(arLocale[key]) !== placeholders(enLocale[key]))
+    const mismatched = arKeys
+      .filter((key) => enLocale[key] !== undefined)
+      .filter((key) => placeholders(arLocale[key]) !== placeholders(enLocale[key]))
     expect(mismatched).toEqual([])
   })
 
@@ -86,6 +129,17 @@ describe('arabic locale value contracts', () => {
     ['quota.storage', 'التخزين'],
     ['settings.appearance.language', 'اللغة'],
     ['settings.appearance.themeDark', 'داكن'],
+    ['files.title', 'الملفات'],
+    ['files.newFolder', 'مجلد جديد'],
+    ['files.rename', 'إعادة تسمية'],
+    ['files.moveToTrash', 'نقل إلى سلة المهملات'],
+    ['files.colSize', 'الحجم'],
+    ['trash.restore', 'استعادة'],
+    ['trash.deletePermanently', 'حذف نهائي'],
+    ['tasks.title', 'المهام'],
+    ['mediaLibrary.title', 'مكتبة الوسائط'],
+    ['uploadPanel.title', 'عمليات الرفع'],
+    ['music.queue', 'قائمة التشغيل'],
   ]
 
   for (const [key, value] of CONTRACTS) {
@@ -117,11 +171,12 @@ describe('arabic runtime translation', () => {
     expect(i18n.t('settings.appearance.language')).toBe('اللغة')
   })
 
-  it('falls back to English for keys ar.json does not cover', async () => {
+  it('falls back to English for prefixes ar.json does not cover yet', async () => {
     const { default: i18n } = await import('./index')
     await i18n.changeLanguage('ar')
-    expect(i18n.t('files.title')).toBe('Files')
-    expect(i18n.t('trash.title')).toBe('Trash')
+    expect(i18n.t('files.title')).toBe('الملفات')
+    expect(i18n.t('shares.title')).toBe('My Shares')
+    expect(i18n.t('admin.title')).toBe('Admin Console')
     expect(i18n.resolvedLanguage).toBe('ar')
   })
 
