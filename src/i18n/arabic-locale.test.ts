@@ -27,6 +27,11 @@ const ARABIC_PREFIXES = [
   'shares.',
   'share.',
   'profile.',
+  'teams.',
+  'org.',
+  'activity.',
+  'notification.',
+  'announcement.',
 ]
 
 const ARABIC_PLURAL_SUFFIXES = ['_zero', '_one', '_two', '_few', '_many', '_other']
@@ -161,6 +166,12 @@ describe('arabic locale value contracts', () => {
     ['share.saveToDrive', 'حفظ في مساحتي'],
     ['share.passwordPlaceholder', 'أدخل كلمة المرور'],
     ['profile.publicSpaceTitle', 'المساحة العامة لـ {{name}}'],
+    ['teams.title', 'الفرق'],
+    ['teams.role.owner', 'المالك'],
+    ['org.workspaceName', 'اسم مساحة العمل'],
+    ['activity.title', 'النشاط'],
+    ['notification.minutesAgo', 'قبل {{count}} دقيقة'],
+    ['announcement.title', 'إعلانات الموقع'],
   ]
 
   for (const [key, value] of CONTRACTS) {
