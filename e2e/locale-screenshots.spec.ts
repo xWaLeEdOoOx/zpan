@@ -117,17 +117,17 @@ test.describe('Locale rendering', () => {
     })
   }
 
-  test('the Arabic locale covers files.* while uncovered pages stay English @desktop', async ({ page }) => {
+  test('the Arabic locale covers share.* while uncovered pages stay English @desktop', async ({ page }) => {
     await signInInLocale(page, ARABIC)
 
-    // Sidebar nav, the quota chip, and files.* are translated; shares.* is not,
-    // so the Shares page keeps its English copy.
+    // Sidebar nav, quota chip, files.*, shares.*, share.* are translated;
+    // storage.* is not, so the Storage page keeps its English heading.
     await expect(sidebar(page).getByText('ملفاتي', { exact: true })).toBeVisible()
     await expect(sidebar(page).getByText('استُخدم 0 B من 1.0 GB')).toBeVisible()
-    await expect(sidebar(page).getByText('سلة المهملات', { exact: true })).toBeVisible()
+    await expect(sidebar(page).getByText('المشاركات', { exact: true })).toBeVisible()
 
-    await page.goto('/shares?status=all&box=sent')
-    await expect(page.getByTestId('page-header').getByText('My Shares')).toBeVisible()
-    await page.screenshot({ path: 'test-results/locale-shares-ar-fallback.png' })
+    await page.goto('/storage')
+    await expect(page.getByRole('heading', { level: 1, name: 'Storage' })).toBeVisible()
+    await page.screenshot({ path: 'test-results/locale-storage-ar-fallback.png' })
   })
 })
