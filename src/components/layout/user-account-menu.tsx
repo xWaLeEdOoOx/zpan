@@ -19,6 +19,20 @@ import { SidebarMenuButton } from '@/components/ui/sidebar'
 import { signOut, useSession } from '@/lib/auth-client'
 import { getInitials } from '@/lib/format'
 
+type LanguageCode = 'en' | 'zh' | 'ar'
+
+const LANGUAGE_OPTIONS: Array<{ code: LanguageCode; label: string }> = [
+  { code: 'en', label: 'English' },
+  { code: 'zh', label: '中文' },
+  { code: 'ar', label: 'العربية' },
+]
+
+function languageCode(resolvedLanguage?: string): LanguageCode {
+  if (resolvedLanguage?.startsWith('zh')) return 'zh'
+  if (resolvedLanguage?.startsWith('ar')) return 'ar'
+  return 'en'
+}
+
 export function UserAccountMenu({
   showAdminLink = false,
   showFrontendLinks = false,
@@ -89,11 +103,14 @@ export function UserAccountMenu({
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuRadioGroup
-              value={i18n.resolvedLanguage?.startsWith('zh') ? 'zh' : 'en'}
+              value={languageCode(i18n.resolvedLanguage)}
               onValueChange={(lang) => i18n.changeLanguage(lang)}
             >
-              <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="zh">中文</DropdownMenuRadioItem>
+              {LANGUAGE_OPTIONS.map(({ code, label }) => (
+                <DropdownMenuRadioItem key={code} value={code}>
+                  {label}
+                </DropdownMenuRadioItem>
+              ))}
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>

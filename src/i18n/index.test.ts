@@ -53,6 +53,12 @@ describe('i18n initialization', () => {
     expect(i18n.t('auth.signIn')).toBe('登录')
   })
 
+  it('returns the Arabic translation after switching to ar', async () => {
+    const { default: i18n } = await import('./index')
+    await i18n.changeLanguage('ar')
+    expect(i18n.t('auth.signIn')).toBe('تسجيل الدخول')
+  })
+
   it('falls back to English for an unknown language', async () => {
     const { default: i18n } = await import('./index')
     await i18n.changeLanguage('fr')
@@ -70,9 +76,10 @@ describe('i18n initialization', () => {
     expect(i18n.options.interpolation?.escapeValue).toBe(false)
   })
 
-  it('has both en and zh resources loaded', async () => {
+  it('has en, zh, and ar resources loaded', async () => {
     const { default: i18n } = await import('./index')
     expect(i18n.hasResourceBundle('en', 'translation')).toBe(true)
     expect(i18n.hasResourceBundle('zh', 'translation')).toBe(true)
+    expect(i18n.hasResourceBundle('ar', 'translation')).toBe(true)
   })
 })
