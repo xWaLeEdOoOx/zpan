@@ -36,6 +36,12 @@ const ARABIC_PREFIXES = [
   'ihost.',
   'storage.',
   'features.',
+  'admin.nav.',
+  'admin.overview.',
+  'admin.about.',
+  'admin.licenseRibbon.',
+  'admin.title',
+  'admin.backToFiles',
 ]
 
 const ARABIC_PLURAL_SUFFIXES = ['_zero', '_one', '_two', '_few', '_many', '_other']
@@ -56,6 +62,13 @@ const LATIN_EXEMPTIONS = new Set([
   'settings.billing.bound.planPro',
   'storage.freePlanName',
   'storage.freePlanPrice',
+  'admin.overview.analyticsBadge',
+  'admin.nav.auth',
+  'admin.licenseRibbon.pro',
+  'admin.licenseRibbon.business',
+  'admin.about.url',
+  'admin.about.nodeVersion',
+  'admin.about.cloud.title',
 ])
 
 // en stores plurals as `base_one` / `base_other`; Arabic needs all six CLDR forms.
@@ -201,6 +214,11 @@ describe('arabic locale value contracts', () => {
     ['storage.creditBalance', 'رصيد الائتمان'],
     ['features.analytics', 'التحليلات'],
     ['features.category.pro', 'ميزات Pro'],
+    ['admin.nav.overview', 'النظرة العامة'],
+    ['admin.nav.users', 'المستخدمون'],
+    ['admin.nav.storages', 'خزائن التخزين'],
+    ['admin.about.title', 'حول ZPan'],
+    ['admin.backToFiles', 'العودة إلى التطبيق'],
   ]
 
   for (const [key, value] of CONTRACTS) {
@@ -239,7 +257,9 @@ describe('arabic runtime translation', () => {
     await i18n.changeLanguage('ar')
     expect(i18n.t('files.title')).toBe('الملفات')
     expect(i18n.t('storage.title')).toBe('التخزين')
-    expect(i18n.t('admin.title')).toBe('Admin Console')
+    expect(i18n.t('admin.title')).toBe('لوحة الإدارة')
+    expect(i18n.t('admin.users.title')).toBe('Users')
+    expect(i18n.t('admin.settings.title')).toBe('Settings')
     expect(i18n.resolvedLanguage).toBe('ar')
   })
 
