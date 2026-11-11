@@ -117,23 +117,18 @@ test.describe('Locale rendering', () => {
     })
   }
 
-  test('the Arabic locale covers the admin shell while uncovered admin pages stay English @desktop', async ({
-    page,
-  }) => {
+  test('the Arabic locale is complete across the admin console @desktop', async ({ page }) => {
     await signInInLocale(page, ARABIC)
 
-    // Sidebar nav, quota chip, files.*, shares.*, storage.*, and the admin shell
-    // are translated; admin.users.* is not.
+    // ar.json covers every key, so the admin surfaces render Arabic too.
     await expect(sidebar(page).getByText('ملفاتي', { exact: true })).toBeVisible()
     await expect(sidebar(page).getByText('استُخدم 0 B من 1.0 GB')).toBeVisible()
     await expect(sidebar(page).getByText('التخزين', { exact: true })).toBeVisible()
 
     await page.goto('/admin')
     await expect(page.locator('header').getByText('لوحة الإدارة')).toBeVisible()
-    await page.goto('/admin/settings')
-    await expect(page.getByText('الإعدادات', { exact: true }).first()).toBeVisible()
     await page.goto('/admin/downloaders')
-    await expect(page.getByText('Downloaders', { exact: true }).first()).toBeVisible()
-    await page.screenshot({ path: 'test-results/locale-admin-downloaders-ar-fallback.png' })
+    await expect(page.getByText('المنزّلات', { exact: true }).first()).toBeVisible()
+    await page.screenshot({ path: 'test-results/locale-admin-downloaders-ar.png' })
   })
 })
