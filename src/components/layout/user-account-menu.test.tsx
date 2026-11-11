@@ -6,6 +6,8 @@ import { UserAccountMenu } from './user-account-menu'
 const mocks = vi.hoisted(() => ({
   navigate: vi.fn(),
   signOut: vi.fn(),
+  changeLanguage: vi.fn(),
+  resolvedLanguage: 'en',
 }))
 
 vi.mock('@tanstack/react-router', () => ({
@@ -35,7 +37,7 @@ vi.mock('next-themes', () => ({
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    i18n: { changeLanguage: vi.fn(), resolvedLanguage: 'en' },
+    i18n: { changeLanguage: mocks.changeLanguage, resolvedLanguage: mocks.resolvedLanguage },
     t: (key: string) => key,
   }),
 }))
@@ -65,6 +67,7 @@ vi.mock('@/components/ui/sidebar', () => ({
 afterEach(() => {
   cleanup()
   vi.clearAllMocks()
+  mocks.resolvedLanguage = 'en'
 })
 
 describe('UserAccountMenu', () => {
@@ -77,5 +80,24 @@ describe('UserAccountMenu', () => {
     expect(await view.findByRole('menuitem', { name: 'nav.settings' })).toBeTruthy()
     expect(view.getByRole('menuitem', { name: 'nav.adminPanel' })).toBeTruthy()
     expect(view.queryByText('nav.teams')).toBeNull()
+  })
+
+  it('offers English, Chinese, and Arabic, checks the active one, and switches to Arabic', async () => {
+    mocks.resolvedLanguage = 'ar'
+    const view = render(<UserAccountMenu showFrontendLinks />)
+
+    fireEvent.pointerDown(view.getByRole('button', { name: /Admin User/ }), { button: 0, ctrlKey: false })
+    fireEvent.click(await view.findByText('settings.appearance.language'))
+
+    const english = await view.findByRole('menuitemradio', { name: 'English' })
+    const chinese = await view.findByRole('menuitemradio', { name: '中文' })
+    const arabic = await view.findByRole('menuitemradio', { name: 'العربية' })
+
+    expect(english.getAttribute('aria-checked')).toBe('false')
+    expect(chinese.getAttribute('aria-checked')).toBe('false')
+    expect(arabic.getAttribute('aria-checked')).toBe('true')
+
+    fireEvent.click(arabic)
+    expect(mocks.changeLanguage).toHaveBeenCalledWith('ar')
   })
 })

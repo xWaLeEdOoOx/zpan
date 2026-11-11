@@ -305,7 +305,8 @@ The frontend is a Vite React SPA.
 - Shared types and schemas must come from `shared/`.
 - UI components live under `src/components/`, grouped by feature and common UI
   primitives.
-- i18n strings live in `src/i18n/locales/en.json` and `zh.json`.
+- i18n strings live in `src/i18n/locales/en.json` and `zh.json`. `ar.json` is a
+  growing subset of `en.json`; keys it does not cover fall back to English.
 
 Frontend code must call ZPan APIs through Hono RPC wrappers. The exception is
 external URLs that are not ZPan APIs, such as presigned S3 upload URLs.

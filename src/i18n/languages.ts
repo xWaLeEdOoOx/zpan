@@ -1,4 +1,4 @@
-export type LanguageCode = 'en' | 'zh'
+export type LanguageCode = 'en' | 'zh' | 'ar'
 
 /**
  * The languages the UI ships. Labels are endonyms (a language's own name), so
@@ -7,11 +7,13 @@ export type LanguageCode = 'en' | 'zh'
 export const LANGUAGE_OPTIONS: Array<{ code: LanguageCode; label: string }> = [
   { code: 'en', label: 'English' },
   { code: 'zh', label: '中文' },
+  { code: 'ar', label: 'العربية' },
 ]
 
 /** Maps a detected locale (`zh-CN`, `en-US`) to the closest supported code. */
 export function languageCode(resolvedLanguage?: string): LanguageCode {
   if (resolvedLanguage?.startsWith('zh')) return 'zh'
+  if (resolvedLanguage?.startsWith('ar')) return 'ar'
   return 'en'
 }
 
