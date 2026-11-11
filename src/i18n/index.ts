@@ -11,7 +11,8 @@ export const i18nReady = i18n
   .use(initReactI18next)
   .init({
     resources: {
-      // ar is a growing subset of en; keys it does not cover fall back to English.
+      // ar covers every en key, plus the six Arabic CLDR plural forms for each
+      // plural base. English stays the fallback for any locale gap.
       ar: { translation: ar },
       en: { translation: en },
       zh: { translation: zh },

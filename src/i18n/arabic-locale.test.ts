@@ -5,51 +5,8 @@ import en from './locales/en.json'
 const arLocale = ar as Record<string, string>
 const enLocale = en as Record<string, string>
 
-// The Arabic locale covers these surfaces completely. Keys outside them fall
-// back to English until their batch lands.
-const ARABIC_PREFIXES = [
-  'auth.',
-  'nav.',
-  'common.',
-  'preview.',
-  'quota.',
-  'settings.appearance.',
-  'public.',
-  'files.',
-  'trash.',
-  'uploadPanel.',
-  'music.',
-  'mediaLibrary.',
-  'tasks.',
-  'downloads.',
-  'actors.',
-  'device.',
-  'shares.',
-  'share.',
-  'profile.',
-  'teams.',
-  'org.',
-  'activity.',
-  'notification.',
-  'announcement.',
-  'settings.',
-  'ihost.',
-  'storage.',
-  'features.',
-  'admin.nav.',
-  'admin.overview.',
-  'admin.about.',
-  'admin.licenseRibbon.',
-  'admin.users.',
-  'admin.storages.',
-  'admin.audit.',
-  'admin.announcement.',
-  'admin.settings.',
-  'admin.auth.',
-  'admin.title',
-  'admin.backToFiles',
-]
-
+// ar.json is a complete locale: every en.json key has an Arabic value, plus the
+// six Arabic CLDR plural forms for each plural base en stores as _one/_other.
 const ARABIC_PLURAL_SUFFIXES = ['_zero', '_one', '_two', '_few', '_many', '_other']
 
 const ARABIC_SCRIPT = /[\u0600-\u06FF]/
@@ -89,6 +46,8 @@ const LATIN_EXEMPTIONS = new Set([
   'admin.auth.emailSmtp',
   'admin.auth.smtpHostPlaceholder',
   'admin.auth.smtpUserPlaceholder',
+  'admin.imageDomains.cloudflare',
+  'admin.imageDomains.routingModeWorker',
 ])
 
 // en stores plurals as `base_one` / `base_other`; Arabic needs all six CLDR forms.
@@ -116,10 +75,8 @@ describe('arabic locale coverage', () => {
     expect(arKeys.filter((key) => !Object.hasOwn(enLocale, key) && !isArabicPluralForm(key))).toEqual([])
   })
 
-  it('ar.json covers every key in the covered prefixes', () => {
-    const missing = Object.keys(enLocale)
-      .filter((key) => ARABIC_PREFIXES.some((prefix) => key.startsWith(prefix)))
-      .filter((key) => !Object.hasOwn(arLocale, key))
+  it('ar.json covers every key in en.json', () => {
+    const missing = Object.keys(enLocale).filter((key) => !Object.hasOwn(arLocale, key))
     expect(missing).toEqual([])
   })
 
@@ -130,14 +87,11 @@ describe('arabic locale coverage', () => {
   })
 
   it('plural keys provide every Arabic plural form', () => {
-    // Checked for every base whose plural pair ar.json has started covering.
-    const missing = pluralBases
-      .filter((base) => Object.hasOwn(arLocale, `${base}_one`))
-      .flatMap((base) =>
-        ARABIC_PLURAL_SUFFIXES.filter((suffix) => !Object.hasOwn(arLocale, `${base}${suffix}`)).map(
-          (suffix) => `${base}${suffix}`,
-        ),
-      )
+    const missing = pluralBases.flatMap((base) =>
+      ARABIC_PLURAL_SUFFIXES.filter((suffix) => !Object.hasOwn(arLocale, `${base}${suffix}`)).map(
+        (suffix) => `${base}${suffix}`,
+      ),
+    )
     expect(missing).toEqual([])
   })
 })
@@ -247,6 +201,11 @@ describe('arabic locale value contracts', () => {
     ['admin.settings.title', 'الإعدادات'],
     ['admin.auth.title', 'مزوّدات OAuth'],
     ['admin.auth.redirectUri', 'رابط إعادة التوجيه'],
+    ['admin.cloudStore.title', 'خطط التخزين'],
+    ['admin.downloaders.title', 'المنزّلات'],
+    ['admin.teams.title', 'الفرق'],
+    ['admin.entitlement.amount', 'الكمية'],
+    ['admin.imageDomains.apiToken', 'رمز API لـ Cloudflare'],
   ]
 
   for (const [key, value] of CONTRACTS) {
@@ -280,16 +239,15 @@ describe('arabic runtime translation', () => {
     expect(i18n.t('files.rename')).toBe('إعادة تسمية')
   })
 
-  it('falls back to English for prefixes ar.json does not cover yet', async () => {
+  it('renders Arabic across every surface now that ar.json is complete', async () => {
     const { default: i18n } = await import('./index')
     await i18n.changeLanguage('ar')
     expect(i18n.t('files.title')).toBe('الملفات')
     expect(i18n.t('storage.title')).toBe('التخزين')
     expect(i18n.t('admin.title')).toBe('لوحة الإدارة')
     expect(i18n.t('admin.users.title')).toBe('المستخدمون')
-    expect(i18n.t('admin.settings.title')).toBe('الإعدادات')
-    expect(i18n.t('admin.cloudStore.title')).toBe('Storage Plans')
-    expect(i18n.t('admin.downloaders.title')).toBe('Downloaders')
+    expect(i18n.t('admin.cloudStore.title')).toBe('خطط التخزين')
+    expect(i18n.t('admin.downloaders.title')).toBe('المنزّلات')
     expect(i18n.resolvedLanguage).toBe('ar')
   })
 

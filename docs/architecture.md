@@ -305,8 +305,11 @@ The frontend is a Vite React SPA.
 - Shared types and schemas must come from `shared/`.
 - UI components live under `src/components/`, grouped by feature and common UI
   primitives.
-- i18n strings live in `src/i18n/locales/en.json` and `zh.json`. `ar.json` is a
-  growing subset of `en.json`; keys it does not cover fall back to English.
+- i18n strings live in `src/i18n/locales/en.json`, `zh.json`, and `ar.json`.
+  `en.json` is the source of truth for keys; `ar.json` covers every key, plus the
+  six Arabic CLDR plural forms (`_zero/_one/_two/_few/_many/_other`) for each
+  plural base en stores as `_one/_other`. `src/i18n/arabic-locale.test.ts`
+  enforces key coverage, placeholder parity, and Arabic-script coverage.
 
 Frontend code must call ZPan APIs through Hono RPC wrappers. The exception is
 external URLs that are not ZPan APIs, such as presigned S3 upload URLs.
