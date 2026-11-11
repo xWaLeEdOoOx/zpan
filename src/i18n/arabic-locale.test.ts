@@ -21,6 +21,9 @@ const ARABIC_PREFIXES = [
   'music.',
   'mediaLibrary.',
   'tasks.',
+  'downloads.',
+  'actors.',
+  'device.',
 ]
 
 const ARABIC_PLURAL_SUFFIXES = ['_zero', '_one', '_two', '_few', '_many', '_other']
@@ -140,6 +143,12 @@ describe('arabic locale value contracts', () => {
     ['mediaLibrary.title', 'مكتبة الوسائط'],
     ['uploadPanel.title', 'عمليات الرفع'],
     ['music.queue', 'قائمة التشغيل'],
+    ['downloads.title', 'التنزيل عن بُعد'],
+    ['downloads.status.downloading', 'قيد التنزيل'],
+    ['device.approve', 'الموافقة'],
+    ['device.deny', 'الرفض'],
+    ['device.code', 'رمز الجهاز'],
+    ['actors.type.api_key', 'مفتاح API'],
   ]
 
   for (const [key, value] of CONTRACTS) {
@@ -169,6 +178,8 @@ describe('arabic runtime translation', () => {
     expect(i18n.t('common.save')).toBe('حفظ')
     expect(i18n.t('nav.files')).toBe('ملفاتي')
     expect(i18n.t('settings.appearance.language')).toBe('اللغة')
+    expect(i18n.t('downloads.title')).toBe('التنزيل عن بُعد')
+    expect(i18n.t('files.rename')).toBe('إعادة تسمية')
   })
 
   it('falls back to English for prefixes ar.json does not cover yet', async () => {
