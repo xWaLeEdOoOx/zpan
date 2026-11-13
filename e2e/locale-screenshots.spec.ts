@@ -130,5 +130,15 @@ test.describe('Locale rendering', () => {
     await page.goto('/admin/downloaders')
     await expect(page.getByText('المنزّلات', { exact: true }).first()).toBeVisible()
     await page.screenshot({ path: 'test-results/locale-admin-downloaders-ar.png' })
+
+    // The analytics copy came from PR #595 (132 admin.analytics.* keys added to
+    // en.json), so it is the newest Arabic batch. Section titles render even
+    // when the section is locked by entitlements, and the upgrade hint proves
+    // the gated copy is Arabic too.
+    await page.goto('/admin/analytics')
+    await expect(page.getByText('إحصاءات الموقع', { exact: true }).first()).toBeVisible()
+    await expect(page.getByText('المستخدمون والنمو', { exact: true }).first()).toBeVisible()
+    await expect(page.getByText('فتح الإحصاءات المتقدّمة', { exact: true }).first()).toBeVisible()
+    await page.screenshot({ path: 'test-results/locale-admin-analytics-ar.png' })
   })
 })
