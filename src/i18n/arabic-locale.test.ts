@@ -48,6 +48,7 @@ const LATIN_EXEMPTIONS = new Set([
   'admin.auth.smtpUserPlaceholder',
   'admin.imageDomains.cloudflare',
   'admin.imageDomains.routingModeWorker',
+  'admin.analytics.label.webdav_download',
 ])
 
 // en stores plurals as `base_one` / `base_other`; Arabic needs all six CLDR forms.
