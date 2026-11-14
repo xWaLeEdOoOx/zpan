@@ -28,7 +28,8 @@
   <a href="README.ko.md">한국어</a> ·
   <strong>Русский</strong> ·
   <a href="README.es.md">Español</a> ·
-  <a href="README.pt-BR.md">Português (BR)</a>
+  <a href="README.pt-BR.md">Português (BR)</a> ·
+  <a href="README.ar.md">العربية</a>
 </p>
 
 ## Что такое ZPan?

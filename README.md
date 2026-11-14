@@ -28,8 +28,11 @@
   <a href="docs/i18n/README.ko.md">한국어</a> ·
   <a href="docs/i18n/README.ru.md">Русский</a> ·
   <a href="docs/i18n/README.es.md">Español</a> ·
-  <a href="docs/i18n/README.pt-BR.md">Português (BR)</a>
+  <a href="docs/i18n/README.pt-BR.md">Português (BR)</a> ·
+  <a href="docs/i18n/README.ar.md">العربية</a>
 </p>
+
+> **About this fork** — this is an Arabic-localized build of [saltbo/zpan](https://github.com/saltbo/zpan), maintained by [xWaLeEdOoOx](https://github.com/xWaLeEdOoOx) as their daily production app. It tracks upstream `main` and adds a complete Arabic locale — every string of the app and the admin console, LTR layout unchanged. i18n fixes contributed upstream are published as English + Chinese PRs; the Arabic locale lives only on this fork. اقرأ الدليل كاملًا بالعربية في [README.ar.md](docs/i18n/README.ar.md).
 
 <p align="center">
   🎉 <strong>ZPan v2 is here.</strong> To celebrate, we're giving away ZPan Pro three waysfor early stargazers, contributors, and new stars.  <br />See <a href="docs/v2-launch-offers.md"><strong>v2 Launch Offers</strong></a>.
