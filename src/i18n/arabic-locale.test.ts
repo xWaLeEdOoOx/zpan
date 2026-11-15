@@ -192,7 +192,7 @@ describe('arabic locale value contracts', () => {
     ['admin.backToFiles', 'العودة إلى التطبيق'],
     ['admin.users.title', 'المستخدمون'],
     ['admin.storages.title', 'خزائن التخزين'],
-    ['admin.storages.colBucket', 'الدلو'],
+    ['admin.storages.colBucket', 'حاوية التخزين'],
     ['admin.audit.title', 'سجلات التدقيق'],
     ['admin.announcement.title', 'إعلان الموقع'],
     ['admin.settings.title', 'الإعدادات'],

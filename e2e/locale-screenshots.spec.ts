@@ -140,5 +140,25 @@ test.describe('Locale rendering', () => {
     await expect(page.getByText('المستخدمون والنمو', { exact: true }).first()).toBeVisible()
     await expect(page.getByText('فتح الإحصاءات المتقدّمة', { exact: true }).first()).toBeVisible()
     await page.screenshot({ path: 'test-results/locale-admin-analytics-ar.png' })
+
+    // Terminology pass (style guide: agent-notes/arabic-terminology.md): the swept
+    // terms must be what the real admin screens render, not just what ar.json says.
+    // bucket = حاوية التخزين (never الدلو), quota = الحصة التخزينية in full,
+    // OAuth client = المستخدم (never العميل, which reads as *customer*).
+    await page.goto('/admin/storages')
+    await expect(page.getByText('حاوية التخزين', { exact: true }).first()).toBeVisible()
+    await page.screenshot({ path: 'test-results/locale-admin-storages-ar.png' })
+
+    await page.goto('/admin/users')
+    await expect(page.getByText('الحصة التخزينية', { exact: true }).first()).toBeVisible()
+
+    await page.goto('/admin/settings/oauth')
+    // The providers table renders its Client ID head only once a provider exists,
+    // so the registered-applications description is the term that proves the sweep
+    // is live on a fresh E2E database (client = المستخدم, never العميل).
+    await expect(
+      page.getByText('مستخدمو OAuth مسجَّلون ديناميكيًا على هذه النسخة من ZPan'),
+    ).toBeVisible()
+    await page.screenshot({ path: 'test-results/locale-admin-terminology-ar.png' })
   })
 })
