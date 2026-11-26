@@ -92,6 +92,9 @@ test.describe('Locale rendering', () => {
       await page.goto('/sign-in')
 
       await expect(page.getByText(locale.signInSubtitle)).toBeVisible()
+      // #622 puts the shared language menu on the sign-in page, so the active
+      // language is readable before a visitor authenticates.
+      await expect(page.getByRole('button', { name: `${locale.languageLabel}: ${locale.label}` })).toBeVisible()
       await expandSignInForm(page, locale)
       await expect(page.getByLabel(locale.emailOrUsername)).toBeVisible()
 
@@ -116,6 +119,35 @@ test.describe('Locale rendering', () => {
       await page.screenshot({ path: `test-results/locale-account-menu-${locale.code}.png` })
     })
   }
+
+  test('the sign-in language menu lists every language and keeps Arabic after a reload @desktop', async ({ page }) => {
+    await page.goto('/sign-in')
+
+    const trigger = page.getByRole('button', { name: 'Language' })
+    await expect(trigger).toContainText('English')
+
+    await trigger.click()
+    for (const locale of LOCALES) {
+      await expect(page.getByRole('menuitemradio', { name: locale.label })).toBeVisible()
+    }
+    await expect(page.getByRole('menuitemradio', { name: 'English' })).toBeChecked()
+
+    await page.getByRole('menuitemradio', { name: ARABIC.label }).click()
+
+    // The page re-renders in Arabic at once, so the button's own label is Arabic
+    // and the trigger has to be found by its new accessible name.
+    await expect(page.getByText(ARABIC.signInSubtitle)).toBeVisible()
+    const arabicTrigger = page.getByRole('button', { name: ARABIC.label })
+    await expect(arabicTrigger).toContainText(ARABIC.label)
+
+    // The language detector caches the choice in localStorage, so it survives a reload.
+    await page.reload()
+    await expect(page.getByText(ARABIC.signInSubtitle)).toBeVisible()
+    await expect(arabicTrigger).toContainText(ARABIC.label)
+    expect(await page.evaluate(() => window.localStorage.getItem('i18nextLng'))).toBe('ar')
+
+    await page.screenshot({ path: 'test-results/locale-sign-in-language-ar.png', fullPage: true })
+  })
 
   test('the Arabic locale is complete across the admin console @desktop', async ({ page }) => {
     await signInInLocale(page, ARABIC)
@@ -156,9 +188,7 @@ test.describe('Locale rendering', () => {
     // The providers table renders its Client ID head only once a provider exists,
     // so the registered-applications description is the term that proves the sweep
     // is live on a fresh E2E database (client = المستخدم, never العميل).
-    await expect(
-      page.getByText('مستخدمو OAuth مسجَّلون ديناميكيًا على هذه النسخة من ZPan'),
-    ).toBeVisible()
+    await expect(page.getByText('مستخدمو OAuth مسجَّلون ديناميكيًا على هذه النسخة من ZPan')).toBeVisible()
     await page.screenshot({ path: 'test-results/locale-admin-terminology-ar.png' })
   })
 })
